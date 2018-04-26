@@ -193,7 +193,7 @@ void slog(int level, int flag, const char *msg, ...);
  *         (t_safe) thread safety flag (1 enabled, 0 disabled).
  * RETURN: (void)
  */
-void slog_init(const char* fname, const char* conf, int lvl, int flvl, int t_safe);
+void slog_init(const char* fname, const char* conf, int lvl, int flvl, int t_safe, int clrfile);
 
 
 /* If include header in CPP code. */

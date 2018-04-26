@@ -384,7 +384,7 @@ void slog(int level, int flag, const char *msg, ...)
 }
 
 
-void slog_init(const char* fname, const char* conf, int lvl, int flvl, int t_safe)
+void slog_init(const char* fname, const char* conf, int lvl, int flvl, int t_safe, int clrfile)
 {
     int status = 0;
 
@@ -420,6 +420,32 @@ void slog_init(const char* fname, const char* conf, int lvl, int flvl, int t_saf
         status = parse_config(conf);
     }
 
+    /* Clear existing logfile if requested */
+    if (clrfile) {
+        SlogDate mdate;
+        char filename[PATH_MAX];
+        
+        slog_get_date(&mdate);
+
+        if (slg.filestamp)
+        {   /* Create log filename with date. (eg example-2017-01-21.log) */
+            snprintf(filename, sizeof(filename), "%s-%02d-%02d-%02d.log", 
+                fname, mdate.year, mdate.mon, mdate.day);
+        }
+        else 
+        {   /* Create log filename using regular name. (eg example.log) */
+            snprintf(filename, sizeof(filename), "%s.log", fname);
+        }
+
+        FILE *fp = fopen(filename, "w");
+        if (fp == NULL) 
+        {
+            return;
+        }
+
+        fclose(fp);
+    }
+    
     /* Handle config parser status. */
     if (!status) 
     {
